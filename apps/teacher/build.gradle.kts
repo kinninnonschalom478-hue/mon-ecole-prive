@@ -7,6 +7,11 @@ android {
     namespace = "com.monecole.teacher"
     compileSdk = 35
 
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
+
     defaultConfig {
         applicationId = "com.monecole.teacher"
         minSdk = 23
