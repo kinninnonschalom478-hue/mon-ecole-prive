@@ -16,6 +16,10 @@ dependencyResolutionManagement {
 
 rootProject.name = "MonEcole"
 
-include(":apps:parent")
-include(":apps:teacher")
-include(":apps:admin")
+include(":parent")
+include(":teacher")
+include(":admin")
+
+project(":parent").projectDir = file("apps/parent")
+project(":teacher").projectDir = file("apps/teacher")
+project(":admin").projectDir = file("apps/admin")
