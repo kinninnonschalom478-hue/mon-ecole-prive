@@ -75,8 +75,14 @@ jobs:
 
       - name: Verify APK
         run: |
-          test -f "${{ matrix.apk }}"
-          ls -lh "${{ matrix.apk }}"
+          echo "=== APK PRODUIT ==="
+          find "apps/${{ matrix.app }}" -type f -name "*.apk" -print
+          APK=$(find "apps/${{ matrix.app }}" -type f -name "*.apk" | head -n 1)
+          test -n "$APK"
+          test -f "$APK"
+          echo "APK=$APK"
+          ls -lh "$APK"
+          echo "APK_PATH=$APK" >> "$GITHUB_ENV"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
