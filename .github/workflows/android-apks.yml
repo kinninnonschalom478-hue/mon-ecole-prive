@@ -27,13 +27,13 @@ jobs:
         include:
           - app: parent
             task: ':parent:assembleDebug'
-            apk: 'apps/parent/build/outputs/apk/debug/app-parent-debug.apk'
+            apk: 'apps/parent/build/outputs/apk/debug/parent-debug.apk'
           - app: teacher
             task: ':teacher:assembleDebug'
-            apk: 'apps/teacher/build/outputs/apk/debug/app-teacher-debug.apk'
+            apk: 'apps/teacher/build/outputs/apk/debug/teacher-debug.apk'
           - app: admin
             task: ':admin:assembleDebug'
-            apk: 'apps/admin/build/outputs/apk/debug/app-admin-debug.apk'
+            apk: 'apps/admin/build/outputs/apk/debug/admin-debug.apk'
 
     steps:
       - name: Checkout
