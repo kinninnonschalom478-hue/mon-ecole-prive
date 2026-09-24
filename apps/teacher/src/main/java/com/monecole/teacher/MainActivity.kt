@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         val device = EditText(this).apply { hint="Identifiant appareil"; setText("TEACHER_DEVICE") }
         val login = Button(this).apply { text="SE CONNECTER" }
         val status = text("", 14f)
-        root.addView(text("MON ÉCOLE",30f)); root.addView(text("ESPACE ENSEIGNANT",20f))
+        root.addView(text("MON ÉCOLE",30f)); root.addView(text("Amour • Travail • Succès",16f)); root.addView(text("ESPACE ENSEIGNANT",20f))
         root.addView(email); root.addView(pass); root.addView(device); root.addView(login); root.addView(status)
         setContentView(root)
         login.setOnClickListener {

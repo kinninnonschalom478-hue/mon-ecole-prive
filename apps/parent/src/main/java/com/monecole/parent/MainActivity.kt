@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         root.addView(label("MON ÉCOLE", 30f))
+        root.addView(label("Amour • Travail • Succès", 16f))
 
         root.addView(
             label(

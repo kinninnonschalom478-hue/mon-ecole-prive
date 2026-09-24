@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         root.addView(label("MON ÉCOLE ADMIN", 30f))
+        root.addView(label("Amour • Travail • Succès", 16f))
         root.addView(label("Administration officielle", 18f))
 
         root.addView(label("DIRECTION", 21f))
