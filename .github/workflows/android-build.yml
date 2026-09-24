@@ -1,0 +1,58 @@
+name: Mon École - Android
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build des 3 applications
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Récupérer le projet
+        uses: actions/checkout@v4
+
+      - name: Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Rendre Gradle exécutable
+        run: chmod +x gradlew
+
+      - name: Vérifier les modules
+        run: ./gradlew projects
+
+      - name: Compiler Parent
+        run: ./gradlew :parent:assembleDebug --stacktrace
+
+      - name: Compiler Teacher
+        run: ./gradlew :teacher:assembleDebug --stacktrace
+
+      - name: Compiler Admin
+        run: ./gradlew :admin:assembleDebug --stacktrace
+
+      - name: Préparer les APK
+        run: |
+          mkdir -p release
+          cp apps/parent/build/outputs/apk/debug/parent-debug.apk release/Parent.apk
+          cp apps/teacher/build/outputs/apk/debug/teacher-debug.apk release/Teacher.apk
+          cp apps/admin/build/outputs/apk/debug/admin-debug.apk release/Admin.apk
+          ls -lh release/
+
+      - name: Publier les APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mon-Ecole-APK
+          path: release/*.apk
+          if-no-files-found: error
