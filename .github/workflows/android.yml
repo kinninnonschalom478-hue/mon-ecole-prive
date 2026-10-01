@@ -24,25 +24,35 @@ jobs:
           java-version: '21'
           cache: gradle
 
-      - name: Prepare Android SDK
+      - name: Android SDK
         run: |
-          yes | sdkmanager --licenses >/dev/null 2>&1 || true
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          test -d "$ANDROID_HOME"
           sdkmanager --install \
             "platform-tools" \
             "platforms;android-35" \
             "build-tools;35.0.0"
 
+      - name: Gradle
+        uses: gradle/actions/setup-gradle@v4
+
       - name: Make Gradle executable
         run: chmod +x gradlew
 
       - name: Build Parent
-        run: ./gradlew :parent:assembleDebug --stacktrace
+        run: ./gradlew :parent:assembleDebug --no-daemon --stacktrace
 
       - name: Build Teacher
-        run: ./gradlew :teacher:assembleDebug --stacktrace
+        run: ./gradlew :teacher:assembleDebug --no-daemon --stacktrace
 
       - name: Build Admin
-        run: ./gradlew :admin:assembleDebug --stacktrace
+        run: ./gradlew :admin:assembleDebug --no-daemon --stacktrace
+
+      - name: Verify APKs
+        run: |
+          find parent/build/outputs/apk -type f -name "*.apk" -print
+          find teacher/build/outputs/apk -type f -name "*.apk" -print
+          find admin/build/outputs/apk -type f -name "*.apk" -print
 
       - name: Upload APKs
         uses: actions/upload-artifact@v4
@@ -52,3 +62,4 @@ jobs:
             parent/build/outputs/apk/debug/*.apk
             teacher/build/outputs/apk/debug/*.apk
             admin/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
