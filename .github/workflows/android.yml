@@ -9,6 +9,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      ANDROID_HOME: /usr/local/lib/android/sdk
+      ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -20,16 +24,8 @@ jobs:
           java-version: '21'
           cache: gradle
 
-      - name: Android SDK
-        uses: android-actions/setup-android@v3
-        with:
-          accept-android-sdk-licenses: false
-
       - name: Prepare Android SDK
-        shell: bash
         run: |
-          export ANDROID_HOME="${ANDROID_HOME:-$ANDROID_SDK_ROOT}"
-          echo "ANDROID_HOME=$ANDROID_HOME"
           yes | sdkmanager --licenses >/dev/null 2>&1 || true
           sdkmanager --install \
             "platform-tools" \
@@ -39,8 +35,14 @@ jobs:
       - name: Make Gradle executable
         run: chmod +x gradlew
 
-      - name: Build all APKs
-        run: ./gradlew :parent:assembleDebug :teacher:assembleDebug :admin:assembleDebug --stacktrace
+      - name: Build Parent
+        run: ./gradlew :parent:assembleDebug --stacktrace
+
+      - name: Build Teacher
+        run: ./gradlew :teacher:assembleDebug --stacktrace
+
+      - name: Build Admin
+        run: ./gradlew :admin:assembleDebug --stacktrace
 
       - name: Upload APKs
         uses: actions/upload-artifact@v4
