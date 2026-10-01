@@ -28,7 +28,12 @@ jobs:
         run: |
           echo "ANDROID_HOME=$ANDROID_HOME"
           test -d "$ANDROID_HOME"
-          sdkmanager --install \
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          if [ ! -x "$SDKMANAGER" ]; then
+            SDKMANAGER="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager -print -quit)"
+          fi
+          test -x "$SDKMANAGER"
+          "$SDKMANAGER" --install \
             "platform-tools" \
             "platforms;android-35" \
             "build-tools;35.0.0"
