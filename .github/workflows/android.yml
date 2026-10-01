@@ -2,11 +2,8 @@ name: Mon École - Android
 
 on:
   push:
-    branches: ["main"]
+    branches: [main]
   workflow_dispatch:
-
-permissions:
-  contents: read
 
 jobs:
   build:
@@ -16,30 +13,38 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Java 17
+      - name: Java 21
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "17"
+          java-version: '21'
+          cache: gradle
 
       - name: Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: "8.10.2"
+      - name: Install Android SDK
+        run: |
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Make Gradle executable
+        run: chmod +x gradlew
 
       - name: Build Parent
-        run: gradle :apps:parent:assembleDebug --no-daemon
+        run: ./gradlew :parent:assembleDebug --stacktrace
+
+      - name: Build Teacher
+        run: ./gradlew :teacher:assembleDebug --stacktrace
 
       - name: Build Admin
-        run: gradle :apps:admin:assembleDebug --no-daemon
+        run: ./gradlew :admin:assembleDebug --stacktrace
 
-      - name: APKs
+      - name: Upload APKs
         uses: actions/upload-artifact@v4
         with:
-          name: mon-ecole-officiel-apks
+          name: mon-ecole-apks
           path: |
-            apps/parent/build/outputs/apk/debug/*.apk
-            apps/admin/build/outputs/apk/debug/*.apk
+            parent/build/outputs/apk/debug/*.apk
+            teacher/build/outputs/apk/debug/*.apk
+            admin/build/outputs/apk/debug/*.apk
