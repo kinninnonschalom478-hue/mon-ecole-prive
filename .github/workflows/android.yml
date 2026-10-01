@@ -55,16 +55,17 @@ jobs:
 
       - name: Verify APKs
         run: |
-          find parent/build/outputs/apk -type f -name "*.apk" -print
-          find teacher/build/outputs/apk -type f -name "*.apk" -print
-          find admin/build/outputs/apk -type f -name "*.apk" -print
+          echo "=== APKs générés ==="
+          find . -type f -name "*.apk" -print
+          echo "=== Vérification par module ==="
+          find parent/build -type f -name "*.apk" -print 2>/dev/null || true
+          find teacher/build -type f -name "*.apk" -print 2>/dev/null || true
+          find admin/build -type f -name "*.apk" -print 2>/dev/null || true
 
       - name: Upload APKs
         uses: actions/upload-artifact@v4
         with:
           name: mon-ecole-apks
           path: |
-            parent/build/outputs/apk/debug/*.apk
-            teacher/build/outputs/apk/debug/*.apk
-            admin/build/outputs/apk/debug/*.apk
+            **/build/outputs/apk/**/*.apk
           if-no-files-found: error
